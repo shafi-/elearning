@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'user_type'
     ];
 
     /**
@@ -28,6 +28,9 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public static $ADMIN_USER = 'admin';
+    public static $CLIENT_USER = 'client';
+
     /**
      * The attributes that should be cast to native types.
      *
@@ -36,4 +39,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function is_admin() {
+        return $this->user_type == static::$ADMIN_USER;
+    }
+
+    public function is_client() {
+        return $this->user_type == static::$CLIENT_USER;
+    }
 }
