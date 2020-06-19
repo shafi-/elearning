@@ -17,7 +17,9 @@
       <div class="card-body">
         <p class="card-text text-truncate">{{ $course->description }}</p>
         <hr>
-        This course has {{ $course->lesson_count ?? 0 }} lessons
+        <a href="{{ route('course.lesson.index', [ 'course' => $course->id ]) }}" class="badge badge-primary">
+          This course has {{ $course->lessons_count ?? 0 }} lessons
+        </a>
       </div>
       <div class="card-footer text-muted">
         <div class=" text-right">
