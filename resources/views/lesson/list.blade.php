@@ -21,6 +21,9 @@
         <p class="card-text text-truncate">{{ $lesson->description }}</p>
       </div>
       <div class="card-footer text-muted">
+        <div class="text-left">
+          <a href="{{ route('lesson.mcq.index', [ 'lesson' => $lesson->id ]) }}">{{ $lesson->mcqs_count }} mcqs found</a>
+        </div>
         <div class=" text-right">
           <a href="{{ route('course.lesson.edit', ['course' => $course->id, 'lesson' => $lesson->id ]) }}" class="badge badge-pill">Edit</a>
           @include('comps.delete_form', [
@@ -38,8 +41,8 @@
 
 @section('js')
 <script>
-  function gotoDetails(courseId) {
-    window.location = '/course/' + courseId
+  function gotoDetails(url) {
+    window.location = url
   }
 </script>
 @endsection

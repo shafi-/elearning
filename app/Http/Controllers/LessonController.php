@@ -15,7 +15,7 @@ class LessonController extends Controller
      */
     public function index(Request $request, Course $course)
     {
-        $lessons = $course->lessons()->orderBy('id', 'desc')->paginate(5);
+        $lessons = $course->lessons()->withCount('mcqs')->orderBy('id', 'desc')->paginate(5);
 
         return view('lesson.list')->with([ 'course' => $course, 'lessons' => $lessons ]);
     }
