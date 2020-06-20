@@ -22,3 +22,4 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('course', 'CourseController');
 Route::resource('course.lesson', 'LessonController');
+Route::resource('lesson.mcq', 'McqController');
