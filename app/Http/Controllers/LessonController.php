@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Course;
 use App\Lesson;
 use Illuminate\Http\Request;
@@ -17,7 +18,9 @@ class LessonController extends Controller
     {
         $lessons = $course->lessons()->withCount('mcqs')->orderBy('id', 'desc')->paginate(5);
 
-        return view('lesson.list')->with([ 'course' => $course, 'lessons' => $lessons ]);
+        $template = Auth::user() && Auth::user()->is_admin() ? 'lesson.list' : 'frontend.lessons_list';
+
+        return view($template)->with([ 'course' => $course, 'lessons' => $lessons ]);
     }
 
     /**
