@@ -68,9 +68,21 @@ class McqController extends Controller
      * @param  \App\Mcq  $mcq
      * @return \Illuminate\Http\Response
      */
-    public function edit(Mcq $mcq)
+    public function edit(Lesson $lesson, $mcq_id)
     {
-        //
+        $mcq = Mcq::where('lesson_id', $lesson->id)->findOrFail($mcq_id);
+
+        $mcq->options = $mcq->options()->select('id', 'body', 'is_answer')->get();
+
+        $mcq->options->map(function($opt) {
+            $opt->makeVisible('is_answer');
+        });
+
+        // return ([
+        return view('mcq.edit')->with([
+            'lesson' => $lesson,
+            'mcq' => $mcq,
+        ]);
     }
 
     /**
@@ -80,9 +92,29 @@ class McqController extends Controller
      * @param  \App\Mcq  $mcq
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Mcq $mcq)
+    public function update(Request $request, $lesson_id, Mcq $mcq)
     {
-        //
+        $request->validate([
+            'question' => 'required|string',
+            'options' => 'required|array',
+            'options.*.body' => 'required|string',
+            'options.*.id' => 'required|numeric',
+            'options.*.is_answer' => 'required|boolean'
+        ]);
+
+        $mcq->question = $request->get('question') ?? $mcq->question;
+
+        foreach ($request->get('options') as $i => $option) {
+            $mcq->options()->updateOrCreate(
+                ['id' => $option['id']],
+                [
+                    'body' => $option['body'],
+                    'is_answer' => $option['is_answer']
+                ]
+            );
+        }
+
+        return [ Mcq::with('options')->find($mcq->id) ];
     }
 
     /**
