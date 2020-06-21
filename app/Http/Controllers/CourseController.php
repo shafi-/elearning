@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Course;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,8 @@ class CourseController extends Controller
      */
     public function index()
     {
-        return view('course.list')->with([ 'courses' => Course::withCount('lessons')->paginate() ]);
+        $view = Auth::user() && Auth::user()->is_admin() ? 'course.list' : 'frontend.course_list';
+        return view($view)->with([ 'courses' => Course::withCount('lessons')->paginate() ]);
     }
 
     /**
