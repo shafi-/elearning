@@ -18,7 +18,7 @@
       <a href="{{ url()->previous() }}" class="btn btn-outline-secondary">Go back</a>
     </div>
     <div v-else>
-      <form @submit.prevent="submitForm('{{ route('lesson.mcq.update', ['lesson' => $mcq->lesson_id, 'mcq' => $mcq->id ]) }}')">
+      <form @submit.prevent="submitForm('{{ route('lesson.mcq.update', ['lesson' => $mcq->lesson_id, 'mcq' => $mcq->id ], false) }}')">
         <div class="form-group">
           <label for="question">Question</label>
           <input type="text" class="form-control" v-model="mcq.question" value="{{ $mcq->question }}" aria-describedby="helpId" placeholder="Question">
@@ -117,7 +117,7 @@ let vmEditMcq = new Vue({
         mcq: this.mcq
       });
       this.submitting = true;
-      axios.patch(url, this.mcq)
+      axios.patch('/api' + url, this.mcq)
         .then(console.log)
         .then(() => this.success = true)
         .catch(console.error)
