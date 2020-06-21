@@ -18,7 +18,6 @@ let addMcq = new Vue({
   },
   created() {
     this.resetForm();
-    this.addMore = true;
   },
   methods: {
     getNewOption() {
