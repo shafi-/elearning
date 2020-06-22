@@ -19,3 +19,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('lesson.mcq', 'Api\McqController');
+Route::post('/exam/{exam}/submit', 'Api\ExamController@submit')->name('submit_exam');

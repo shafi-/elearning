@@ -13,7 +13,7 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row" v-if="not_submitted">
     <div class="col-12">
       <span class="text-danger">Instructions</span>
       <ul class="">
@@ -24,7 +24,7 @@
     </div>
   </div>
 
-  <div class="card-deck">
+  <div class="card-deck" v-if="not_submitted">
     <div v-for="(mcq,mcqIdx) in exam.mcqs" :key="mcq.id" class="row flex-fill">
       <div class="col-12 mb-2">
         <div class="card">
@@ -51,7 +51,26 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row" v-else>
+    <table class="table">
+      <tbody>
+        <tr>
+          <td scope="row">Total: </td>
+          <td>@{{ result.total }}</td>
+        </tr>
+        <tr>
+          <td scope="row">Answered: </td>
+          <td>@{{ Object.keys(result.answers).length }}</td>
+        </tr>
+        <tr>
+          <td scope="row">Correct: </td>
+          <td>@{{ result.score }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="row" v-if="not_submitted">
     <div class="col-12">
       <button type="button" v-on:click="submit" class="btn btn-primary btn-block">
         <span v-if="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -59,11 +78,19 @@
       </button>
     </div>
   </div>
+
+  <div class="row" v-else>
+    <div class="col-12">
+      <a class="btn btn-primary" href="/" role="button">Learn more</a>
+    </div>
+  </div>
 </div>
 @endsection
 
 @push('js')
 <script>
+  let submitUrl = "{{ route('submit_exam', [ 'exam' => $exam->id ]) }}";
+
   let exam = new Vue({
     el: '#take_exam',
     data() {
@@ -72,6 +99,8 @@
           mcqs: {!! json_encode($mcqs, JSON_HEX_TAG) !!}
         },
         errors: [],
+        score: 0,
+        result: undefined, // [{ mcq_id, options: [{ selected, answer }] }]
         loading: false
       }
     },
@@ -85,6 +114,9 @@
       disableInput() {
         // add input disable logic
         return this.loading
+      },
+      not_submitted() {
+        return !this.result;
       }
     },
     methods: {
@@ -99,19 +131,21 @@
         return chunks;
       },
       submit() {
-        if (this.loading) return;
+        if (this.loading || !this.not_submitted) return;
         this.loading = true;
 
-        let data = this.exam.mcqs.map(mcq => {
+        let mcqs = this.exam.mcqs.map(mcq => {
           return {
             id: mcq.id,
             answers: mcq.options.filter(opt => opt.selected).map(opt => opt.id)
           }
         });
 
-        console.log(data);
-
-        this.loading = false;
+        axios
+          .post(submitUrl, { mcqs }, 'application/json' )
+          .then(res => this.result = res.data)
+          .catch(err => this.errors.push(err))
+          .finally(() => this.loading = false);
       }
     }
   })
