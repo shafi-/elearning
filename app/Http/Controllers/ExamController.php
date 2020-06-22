@@ -9,6 +9,21 @@ use Illuminate\Http\Request;
 class ExamController extends Controller
 {
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $user = Auth::user();
+
+        if ($user->is_admin()) $exams = Exam::all();
+        else $exams = $user->exams();
+
+        return view('frontend.exam_list')->with([ 'exams' => $exams ]);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -38,7 +53,16 @@ class ExamController extends Controller
     {
         $exam->load('lesson.mcqs.options');
 
-        return $exam;
-        // return view('take_exam')->with(compact('exam'));
+        $mcqs = $exam->lesson->mcqs->map(function($mcq){
+
+            $options = $mcq->options->map(function($opt) {
+                return [ 'id' => $opt->id, 'body' => $opt->body, 'selected' => false ];
+            });
+
+            return [ 'id' => $mcq->id, 'question' => $mcq->question, 'options' => $options ];
+        });
+
+        // return $exam;
+        return view('frontend.take_exam')->with([ 'exam' => $exam, 'mcqs' => $mcqs ]);
     }
 }
