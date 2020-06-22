@@ -1,4 +1,4 @@
-b4:<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <title>@yield('title')</title>
