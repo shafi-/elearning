@@ -47,4 +47,8 @@ class User extends Authenticatable
     public function is_client() {
         return $this->user_type == static::$CLIENT_USER;
     }
+
+    public function exams() {
+        return $this->hasMany(Exam::class);
+    }
 }
