@@ -17,13 +17,15 @@
       <div class="card-body">
         <p class="card-text text-truncate">{{ $lesson->description }}</p>
       </div>
-      @if($lesson->mcqs_count)
-      <div class="card-footer">
-        <div class="text-left">
-          @include('comps.btn_exam', [ 'lesson_id' => $lesson->id ])
+      @auth
+        @if($lesson->mcqs_count)
+        <div class="card-footer">
+          <div class="text-left">
+            @include('comps.btn_exam', [ 'lesson_id' => $lesson->id ])
+          </div>
         </div>
-      </div>
-      @endif
+        @endif
+      @endauth
     </div>
   @endforeach
 

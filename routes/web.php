@@ -23,3 +23,4 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('course', 'CourseController');
 Route::resource('course.lesson', 'LessonController');
 Route::resource('lesson.mcq', 'McqController');
+Route::resource('exam', 'ExamController')->only(['index','create','store','show'])->middleware('auth');
