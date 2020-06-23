@@ -28,3 +28,6 @@ Route::get('/course/{course}/lesson/{lesson}', 'LessonController@show')->name('c
 
 Route::resource('lesson.mcq', 'McqController')->middleware('auth');
 Route::resource('exam', 'ExamController')->only(['index','create','store','show'])->middleware('auth');
+Route::prefix('ajax')->group(function(){
+  Route::post('/exam/{exam}/submit', 'Api\ExamController@submit')->name('submit_exam')->middleware('auth');
+});
