@@ -13,14 +13,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
+Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index')->name('home');
-Route::resource('course', 'CourseController');
-Route::resource('course.lesson', 'LessonController');
-Route::resource('lesson.mcq', 'McqController');
+
+Route::resource('course', 'CourseController')->except(['index','show'])->middleware(['auth', 'admin']);
+Route::get('/course', 'CourseController@index')->name('course.index');
+Route::get('/course/{course}', 'CourseController@show')->name('course.show');
+
+Route::resource('course.lesson', 'LessonController')->except(['index'])->middleware(['auth', 'admin']);
+Route::get('/course/{course}/lesson', 'LessonController@index')->name('course.lesson.index');
+Route::get('/course/{course}/lesson/{lesson}', 'LessonController@show')->name('course.lesson.show');
+
+Route::resource('lesson.mcq', 'McqController')->middleware('auth');
 Route::resource('exam', 'ExamController')->only(['index','create','store','show'])->middleware('auth');
