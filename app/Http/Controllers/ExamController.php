@@ -17,8 +17,49 @@ class ExamController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->is_admin()) $exams = Exam::all();
-        else $exams = $user->exams();
+        /*
+        // Single Raw query to get exams
+        //      with lesson title,
+        //      mcqs count,
+        //      user submitted answer count,
+        //      correct answer count
+
+        $single_query = "select *, 
+            (select title from lessons where lessons.id = exams.lesson_id) as lesson_title,
+            (select count(*)
+                from `elearning`.`mcqs`
+                inner join `elearning`.`lessons`
+                on `elearning`.`lessons`.`id` = `elearning`.`mcqs`.`lesson_id`
+                where `elearning`.`exams`.`lesson_id` = `elearning`.`lessons`.`id`) as mcqs_count,
+            (select count(*)
+                from answers
+                where answers.exam_id = exams.id and answers.verdict = 1) as correct,
+            (select count(*)
+                from answers
+                where answers.exam_id = exams.id) as answered
+            from exams";
+        $exams1 = \DB::select($single_query);
+        $exams1 = collect($exams1)->map(function ($exam) {
+            return [
+                'id' => $exam->id,
+                'lesson' => collect([ 'title' => $exam->lesson_title ]),
+                'result' => [
+                    'total' => $exam->mcqs_count,
+                    'answered' => $exam->answered,
+                    'score' => $exam->correct
+                ]
+            ];
+        });
+        */
+
+        $query = Exam::select('id', 'user_id', 'lesson_id')
+            ->with('answers:id,exam_id,verdict', 'lesson:id,title')
+            ->withCount('mcqs');
+
+
+        if (!$user->is_admin()) $query = $query->where('user_id', $user->id);
+
+        $exams = $query->simplePaginate();
 
         return view('frontend.exam_list')->with([ 'exams' => $exams ]);
     }
