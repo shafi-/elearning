@@ -7,6 +7,7 @@ use App\Exam;
 use App\Mcq;
 use App\Http\Controllers\Controller;
 use DB;
+use Gate;
 use Illuminate\Http\Request;
 
 class ExamController extends Controller
@@ -20,6 +21,8 @@ class ExamController extends Controller
      */
     public function submit(Request $request, Exam $exam)
     {
+        Gate::authorize('submit', $exam);
+
         $request->validate([
             'mcqs' => 'required|array',
             'mcqs.*.id' => 'required|numeric',

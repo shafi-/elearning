@@ -92,6 +92,8 @@ class ExamController extends Controller
      */
     public function show(Exam $exam)
     {
+        \Gate::authorize('show', $exam);
+
         $exam->load('lesson.mcqs.options');
 
         $mcqs = $exam->lesson->mcqs->map(function($mcq){
