@@ -15,11 +15,27 @@
 
   <div class="row" v-if="not_submitted">
     <div class="col-12">
-      <span class="text-danger">Instructions</span>
-      <ul class="">
+      <span class="text-info">Instructions</span>
+      <ul class="list-unstyled">
         <li>Check the box at the left of the answers</li>
         <li>There may be multiple answers of any mcq</li>
         <li>After completing, press the submit button</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row" v-if="errors.length > 0">
+    <div class="col-12">
+      <span class="text-danger">Errors</span>
+      <ul class="list-unstyled">
+        <li v-for="(error, errIndex) in errors" :key="errIndex" class="list-group-item-danger">
+          <div class="alert alert-danger show" role="alert">
+            <button v-on:click="removeError(errIndex)" type="button" class="close" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <strong>@{{ error.msg }}</strong>
+          </div>
+        </li>
       </ul>
     </div>
   </div>
@@ -144,8 +160,17 @@
         axios
           .post(submitUrl, { mcqs }, 'application/json' )
           .then(res => this.result = res.data)
-          .catch(err => this.errors.push(err))
+          .catch(err => {
+            this.errors.push({ msg: err.message, code: err.status });
+            $('html, body').animate({ scrollTop: 0 }, 'slow');
+          })
           .finally(() => this.loading = false);
+      },
+      removeError(index) {
+        let rest = this.errors.filter(
+          (err, idx) => idx != index
+        );
+        this.errors = rest;
       }
     }
   })
