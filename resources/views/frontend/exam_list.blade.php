@@ -4,7 +4,11 @@
   @if(count($exams) < 1)
   <div>
     <div class="alert alert-primary" role="alert">
+      @if(Auth::user()->is_client())
       <strong>You did not take any exam.</strong> <a href="{{ route('course.index') }}" class="alert-link">Find courses to learn</a>
+      @else
+      <strong>Users did not take part in any exam yet. Add interesting courses and lessons.</strong>
+      @endif
     </div>
   </div>
   @endif
