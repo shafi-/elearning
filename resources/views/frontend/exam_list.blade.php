@@ -1,6 +1,13 @@
 @extends('layouts.frontend')
 
 @section('content')
+  @if(count($exams) < 1)
+  <div>
+    <div class="alert alert-primary" role="alert">
+      <strong>You did not take any exam.</strong> <a href="{{ route('course.index') }}" class="alert-link">Find courses to learn</a>
+    </div>
+  </div>
+  @endif
   <div class="list-group">
     @foreach($exams as $exam)
     <a href="#" class="list-group-item list-group-item-action mb-3 border-info">
