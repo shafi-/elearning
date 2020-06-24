@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Auth;
 use Closure;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class CheckAdmin
 {
@@ -18,6 +19,6 @@ class CheckAdmin
     {
         if (Auth::user() && Auth::user()->is_admin())
             return $next($request);
-        abort(403, 'Unauthorized action.');
+        throw new AuthorizationException('You are not authorized');
     }
 }
