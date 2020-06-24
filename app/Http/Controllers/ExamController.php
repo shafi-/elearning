@@ -92,7 +92,7 @@ class ExamController extends Controller
      */
     public function show(Exam $exam)
     {
-        \Gate::authorize('show', $exam);
+        \Gate::authorize('view', $exam);
 
         $exam->load('lesson.mcqs.options');
 
