@@ -19,3 +19,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('lesson.mcq', 'Api\McqController')->middleware(['auth:api']);
+Route::apiResource('courses', 'Api\CourseController');
+Route::apiResource('/demo/tasks', 'Api\CourseController');
