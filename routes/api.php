@@ -18,4 +18,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::apiResource('courses', 'Api\CourseController')->only(['index']);
+Route::apiResource('courses', 'Api\CourseController')->except(['index'])->middleware(['auth:api']);
 Route::apiResource('lesson.mcq', 'Api\McqController')->middleware(['auth:api']);
