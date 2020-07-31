@@ -20,4 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::apiResource('courses', 'Api\CourseController')->only(['index']);
 Route::apiResource('courses', 'Api\CourseController')->except(['index'])->middleware(['auth:api']);
+
+Route::apiResource('lessons', 'Api\LessonController')->middleware(['auth:api']);
+
 Route::apiResource('lesson.mcq', 'Api\McqController')->middleware(['auth:api']);
