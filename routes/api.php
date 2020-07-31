@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::apiResource('courses', 'Api\CourseController')->only(['index']);
 Route::apiResource('courses', 'Api\CourseController')->except(['index'])->middleware(['auth:api']);
