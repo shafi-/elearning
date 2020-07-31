@@ -50,7 +50,7 @@ class CourseApiTest extends TestCase
 
         $data = $course->toArray();
 
-        // $this->assert
+        unset($data['slug']);
 
         $response = $this->actingAs($this->user, 'api')
             ->withHeaders($this->headers)
@@ -72,6 +72,8 @@ class CourseApiTest extends TestCase
         $res->assertStatus(200);
 
         $res->assertJson($course->toArray());
+
+        $res->assertJson([ 'slug' => \Str::slug($course->title) ]);
     }
 
     public function edit()
@@ -89,6 +91,6 @@ class CourseApiTest extends TestCase
 
         $res->assertNoContent();
 
-        $this->assertDeleted($course->getTable(), $course->toArray());
+        $this->assertDeleted($course);
     }
 }
