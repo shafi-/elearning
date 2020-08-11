@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
+Route::get('/me', function() { return Auth::user(); })->middleware('auth:api');
+
 Route::apiResource('courses', 'Api\CourseController')->only(['index']);
 Route::apiResource('courses', 'Api\CourseController')->except(['index'])->middleware(['auth:api']);
 
